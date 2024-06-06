@@ -16,8 +16,8 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [1.21.x, 1.22.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        go-version: [1.22.x]
+        os: ["github-16cpu-x64","runs-on,runner=16cpu-linux-x64"]
     runs-on: ${{ matrix.os }}
     steps:
       - if: matrix.os == 'ubuntu-latest'
@@ -61,8 +61,7 @@ jobs:
         run: |
           pip install docutils
           rst2html --version
-      - if: matrix.os == 'ubuntu-latest'
-        name: Install pandoc on Linux
+      - name: Install pandoc on Linux
         run: |
           sudo apt-get update -y
           sudo apt-get install -y pandoc
@@ -76,8 +75,7 @@ jobs:
       - if: matrix.os == 'windows-latest'
         run: |
           choco install mingw
-      - if: matrix.os == 'ubuntu-latest'
-        name: Install dart-sass Linux
+      - name: Install dart-sass Linux
         run: |
           echo "Install Dart Sass version ${SASS_VERSION} ..."
           curl -LJO "https://github.com/sass/dart-sass/releases/download/${SASS_VERSION}/dart-sass-${SASS_VERSION}-linux-x64.tar.gz";
@@ -100,11 +98,9 @@ jobs:
           curl -LJO "https://github.com/sass/dart-sass/releases/download/${env:SASS_VERSION}/dart-sass-${env:SASS_VERSION}-windows-x64.zip";
           Expand-Archive -Path "dart-sass-${env:SASS_VERSION}-windows-x64.zip" -DestinationPath .;
           echo  "$env:GITHUB_WORKSPACE/dart-sass/" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf-8 -Append
-      - if: matrix.os == 'ubuntu-latest'
-        name: Install staticcheck
+      - name: Install staticcheck
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
-      - if: matrix.os == 'ubuntu-latest'
-        name: Run staticcheck
+      - name: Run staticcheck
         run: staticcheck ./...
       - if: matrix.os != 'windows-latest'
         name: Check
@@ -123,8 +119,7 @@ jobs:
       - name: Build tags
         run: |
           go install -tags extended,nodeploy
-      - if: matrix.os == 'ubuntu-latest'
-        name: Build for dragonfly
+      - name: Build for dragonfly
         run: |
           go install
         env:
