@@ -41,7 +41,7 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
           check-latest: true
-          cache: true
+          cache: false
           cache-dependency-path: |
             **/go.sum
             **/go.mod
